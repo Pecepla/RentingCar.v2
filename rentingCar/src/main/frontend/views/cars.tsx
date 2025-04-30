@@ -1,0 +1,63 @@
+import { CarEndpoint } from 'Frontend/generated/endpoints';
+import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
+import { Button } from '@vaadin/react-components/Button';
+
+export interface Car {
+  id: string;
+  make: string;
+  model: string;
+  year: number;
+  color: string;
+  [key: string]: unknown; // Allows additional properties
+}
+// The error occurs because CarEndpoint.saveCar expects
+// a Record<string, unknown>,
+// but we are passing a Car interface.
+
+export const config: ViewConfig = {
+  menu: { order: 1, icon: 'line-awesome/svg/car-side-solid.svg' },
+  title: 'Cars'
+};
+
+const sampleCar: Car = {
+  id: "123",
+  make: "Toyota",
+  model: "Camry",
+  year: 2025,
+  color: "Blue",
+  isRented: false,
+  price: 40000
+};
+
+export default function CarsView() {
+  const handleSaveCar = async () => {
+    try {
+      await CarEndpoint.saveCar(sampleCar);
+      alert('Car saved successfully!');
+    } catch (error) {
+      console.error('Error saving car:', error);
+      alert('Failed to save car');
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full items-center justify-center p-l text-center box-border">
+      <img style={{ width: '200px' }} src="images/empty-plant.png" />
+      <h2>Car Management</h2>
+
+      <div className="card p-m">
+        <pre className="text-left">
+          {JSON.stringify(sampleCar, null, 2)}
+        </pre>
+        <Button
+          onClick={handleSaveCar}
+
+        >
+          Save Car
+        </Button>
+      </div>
+
+      <p>It’s a place where you can grow your own UI 🤗</p>
+    </div>
+  );
+}
